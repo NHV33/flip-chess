@@ -56,9 +56,11 @@ function generateBoard() {
       newCell.append(newCellBG);
 
       ((y + x) % 2 == 0 ) ?
-        newCellBG.style.backgroundColor = "lightbrown" : // dark square
-        newCellBG.style.backgroundColor = "lightgrey" ; // light square
-      newCellBG.textContent = chessPos;
+        newCellBG.classList.add("light-square") :
+        newCellBG.classList.add("dark-square") ;
+
+      // display grid notation (disabled for now)
+      // newCellBG.textContent = chessPos;
 
       setAsDropZone(newCell);
     }
@@ -77,8 +79,8 @@ function placePiece(pos) {
   const newPiece = newElement("div", {class: "chess-piece"});
   pieceContainer.append(newPiece);
 
-  pieceColors = {l:"white", d:"black"}
-  newPiece.style.color = pieceColors[pos[2]];
+  pieceColors = {l:"light-piece", d:"dark-piece"}
+  newPiece.classList.add(pieceColors[pos[2]]);
   pieceTypes = {p:"o", n: "m", b:"v", r:"t", q:"w", k:"l"}
   newPiece.textContent = pieceTypes[pos[3]];
 

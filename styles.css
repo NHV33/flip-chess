@@ -17,23 +17,35 @@ body {
   left: 0;
   top: 0;
   overflow: hidden;
+  background-color:rgb(54, 81, 79);
+}
+
+.light-square {
+  background-color: hsl(176, 20%, 70%);
+}
+
+.dark-square {
+  background-color: hsl(176, 20%, 40%);
+}
+
+.light-piece {
+  color: white;
+  text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+}
+
+.dark-piece {
+  color: black;
+  text-shadow: 2px 2px 2px rgba(255, 255, 255, 0.5);
 }
 
 .draggable {
-  /* position: absolute; */
-  /* position:; */
-  top: 0px;
-  left: 0px;
   z-index: 90;
   cursor: move;
-  /* pointer-events: none; */
 }
 
 .chess-piece {
   transition-duration: 1000ms;
   font-family: Lucena;
-  color: white;
-  text-shadow: 2px 2px 2px grey;
   font-size: 50px;
   display: flex;
   justify-content: center;
@@ -67,7 +79,7 @@ body {
   border-radius: 100%;
   padding: 10px;
   width: 50px;
-  background-color: lightgreen;
+  background-color: hsl(176, 20%, 70%);
   /* font-size: 50px; */
 }
 
@@ -84,25 +96,20 @@ body {
   transform: rotate(180deg);
 }
 
-.flipped-piece {
-  transition-duration: 1000ms;
-  transform: rotate(-180deg);
-}
-
 .dragged-piece {
   /* transition-duration: 300ms; */
-  transform: scale(1.3);
+  /* transform: scale(1.3); */
 }
 
 /* prevents pieces on the sideline from rotating */
-body > .piece-container .flipped-piece {
-  transition-duration: 0ms;
-  transform: rotate(0deg) !important;
+body > .piece-container .chess-piece{
+  transition-duration: 0ms !important;
+  transform: rotate(10deg) !important;
 }
 
-.dragged-piece .flipped-piece {
-  transition-duration: 0ms;
-  transform: rotate(0deg) !important;
+#board .flipped-piece {
+  transition-duration: 1000ms;
+  transform: rotate(-180deg);
 }
 
 #board {
@@ -148,7 +155,7 @@ body > .piece-container .flipped-piece {
   text-overflow: clip;
   height: 100%;
   width: 100%;
-  background-color: bisque;
+  /* background-color: bisque; */
   display: flex;
   align-items: center;
   justify-content: center;
