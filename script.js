@@ -105,16 +105,14 @@ function setPieces() {
 setPieces();
 
 function setAsDropZone(element) {
-  const originalColor = window.getComputedStyle(element)["backgroundColor"];
-  console.log("originalColor: ", originalColor);
 
   element.addEventListener("mousemove", () => {
-    element.style.backgroundColor = "rgba(100,255,100, 0.5)";
+    element.classList.add("highlight-square");
     dropZone = element;
   })
 
   element.addEventListener("mouseout", () => {
-    element.style.backgroundColor = originalColor;
+    element.classList.remove("highlight-square");
     dropZone = null;
   })
 }
