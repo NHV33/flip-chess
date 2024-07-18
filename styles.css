@@ -71,6 +71,7 @@ body {
 }
 
 #settings-panel {
+  pointer-events: none;
   position: fixed;
   bottom: 0px;
   display: flex;
@@ -79,6 +80,7 @@ body {
 }
 
 #flip-button {
+  pointer-events: all;
   margin: 30px;
   border-radius: 100%;
   padding: 10px;

@@ -1,6 +1,9 @@
 const _ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const _abc = _ABC.toLowerCase();
 
+const dropSound = new Audio('MMDrop.mp3');
+const replaceSound = new Audio('MMReplace.mp3');
+
 let cursorX = 0;
 let cursorY = 0;
 let dragOffsetX = 0;
@@ -61,8 +64,6 @@ function generateBoard() {
 
       // display grid notation (disabled for now)
       // newCellBG.textContent = chessPos;
-
-      // setAsDropZone(newCell);
     }
   }
 }
@@ -168,7 +169,7 @@ function updateDropZones() {
     square.classList.remove("highlight-square");
   }
   const nearest = nearestElement(dragElement, squares);
-  if (nearest.distance <= range) {
+  if (nearest.distance <= range * 1.5) {
     nearest.element.classList.add("highlight-square");
     dropZone = nearest.element;
   } else {
@@ -184,7 +185,6 @@ function drag(event) {
 }
 
 function updateCursorPos(event) {
-  console.log("event: ", event);
   if (["touchstart", "touchmove"].includes(event.type)) {
     cursorX = event.touches[0].clientX
     cursorY = event.touches[0].clientY
@@ -219,6 +219,8 @@ function dropIn(element) {
     dropZone.append(element);
     element.style.position = "static";
     dropZone.classList.remove("highlight-square");
+    dropSound.play();
+
   }
   dropZone = null;
 }
