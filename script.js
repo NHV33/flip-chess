@@ -62,7 +62,7 @@ function generateBoard() {
       // display grid notation (disabled for now)
       // newCellBG.textContent = chessPos;
 
-      setAsDropZone(newCell);
+      // setAsDropZone(newCell);
     }
   }
 }
@@ -104,22 +104,22 @@ function setPieces() {
 
 setPieces();
 
-function setAsDropZone(element) {
+// function setAsDropZone(element) {
 
-  for (eventType of ["mousemove", "touchmove", "touchstart"]) {
-    element.addEventListener(eventType, () => {
-      element.classList.add("highlight-square");
-      dropZone = element;
-    })
-  }
+//   for (eventType of ["mousemove", "touchmove", "touchstart"]) {
+//     element.addEventListener(eventType, () => {
+//       element.classList.add("highlight-square");
+//       dropZone = element;
+//     })
+//   }
 
-  for (eventType of ["mouseout", "touchend", "touchcancel"]) {
-    element.addEventListener(eventType, () => {
-      element.classList.remove("highlight-square");
-      dropZone = null;
-    })
-  }
-}
+//   for (eventType of ["mouseout", "touchend", "touchcancel"]) {
+//     element.addEventListener(eventType, () => {
+//       element.classList.remove("highlight-square");
+//       dropZone = null;
+//     })
+//   }
+// }
 
 function enableDrag(element) {
 
@@ -161,10 +161,26 @@ function clearDocEvents() {
   document.ontouchcancel = null;
 }
 
+function updateDropZones() {
+  const squares = document.querySelectorAll(".board-cell");
+  const range = squares[0].getBoundingClientRect().width / 2;
+  for (let square of squares) {
+    square.classList.remove("highlight-square");
+  }
+  const nearest = nearestElement(dragElement, squares);
+  if (nearest.distance <= range) {
+    nearest.element.classList.add("highlight-square");
+    dropZone = nearest.element;
+  } else {
+    dropZone = null;
+  }
+}
+
 function drag(event) {
-  event.preventDefault();
+  // event.preventDefault();
   updateCursorPos(event);
   updateElementPos();
+  updateDropZones();
 }
 
 function updateCursorPos(event) {
@@ -202,10 +218,36 @@ function dropIn(element) {
   if (dropZone) {
     dropZone.append(element);
     element.style.position = "static";
+    dropZone.classList.remove("highlight-square");
   }
   dropZone = null;
 }
 
+function getCenterPos(element) {
+  const rect = element.getBoundingClientRect();
+  x = rect.left + (rect.width / 2);
+  y = rect.top  + (rect.height / 2);
+  return { x:x, y:y }
+}
+
+function getDistance(element1, element2) {
+  e1 = getCenterPos(element1);
+  e2 = getCenterPos(element2);
+  xSide = Math.abs(e1.x - e2.x);
+  ySide = Math.abs(e1.y - e2.y);
+  return Math.sqrt((xSide ** 2) + (ySide ** 2))
+}
+
+function nearestElement(originElement, elements) {
+  nearest = { element:elements[0], distance:getDistance(originElement, elements[0]) }
+  for (let element of elements) {
+    const distance = getDistance(originElement, element);
+    if (distance < nearest.distance) {
+      nearest = { element:element, distance:distance }
+    }
+  }
+  return nearest
+}
 
 // function enableDragging(element) {
 //   let x1 = 0, y1 = 0, x2 = 0, y2 = 0;
