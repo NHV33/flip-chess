@@ -7,9 +7,9 @@
        /* url('webfont.svg#svgFontName') format('svg'); Legacy iOS */
 }
 
-/* :root {
-
-} */
+:root {
+  --cell-size: 10vmin;
+}
 
 body {
   padding: 0px;
@@ -17,7 +17,7 @@ body {
   left: 0;
   top: 0;
   overflow: hidden;
-  background-color:rgb(54, 81, 79);
+  background-color:hsl(176, 20%, 26%);
 }
 
 .light-square {
@@ -29,21 +29,21 @@ body {
 }
 
 .highlight-square {
-  background-color: rgba(100,255,100, 0.5);
+  background-color: hsla(120, 100%, 70%, 0.5);
 }
 
 .light-piece {
   color: white;
-  text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+  text-shadow: 2px 2px 2px hsla(0, 0%, 0%, 0.5);
 }
 
 .dark-piece {
   color: black;
-  text-shadow: 2px 2px 2px rgba(255, 255, 255, 0.5);
+  text-shadow: 2px 2px 2px hsla(0, 0%, 100%, 0.5);
 }
 
 .draggable {
-  z-index: 90;
+  z-index: 10;
   cursor: move;
 }
 
@@ -58,19 +58,17 @@ body {
 }
 
 .piece-container {
-  /* color: purple; */
-  /* font-size: 100%; */
   display: flex;
   justify-content: center;
   align-items: center;
-  max-width: 80px;
-  max-height: 80px;
-  width: 80px;
-  height: 80px;
-  /* background-color: #2196F3; */
+  max-width: var(--cell-size);
+  max-height: var(--cell-size);
+  width: var(--cell-size);
+  height: var(--cell-size);
 }
 
 #settings-panel {
+  z-index: 20;
   pointer-events: none;
   position: fixed;
   bottom: 0px;
@@ -86,7 +84,6 @@ body {
   padding: 10px;
   width: 50px;
   background-color: hsl(176, 20%, 70%);
-  /* font-size: 50px; */
 }
 
 #flip-button:hover {
@@ -140,14 +137,11 @@ body > .piece-container .chess-piece{
   white-space: nowrap;
   text-overflow: clip;
   position: relative;
-  height: 80px;
-  width: 80px;
-  /* background-color: bisque; */
-  /* display: flex; */
-  /* align-items: center; */
-  /* justify-content: center; */
-  /* color: white; */
-  /* text-shadow: 1px 1px 1px black; */
+  height: var(--cell-size);
+  width: var(--cell-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .board-cell-bg {
@@ -161,7 +155,6 @@ body > .piece-container .chess-piece{
   text-overflow: clip;
   height: 100%;
   width: 100%;
-  /* background-color: bisque; */
   display: flex;
   align-items: center;
   justify-content: center;

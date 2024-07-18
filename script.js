@@ -2,6 +2,7 @@ const _ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const _abc = _ABC.toLowerCase();
 
 const dropSound = new Audio('MMDrop.mp3');
+const flipSound = new Audio('MMFlip.mp3');
 const replaceSound = new Audio('MMReplace.mp3');
 
 let cursorX = 0;
@@ -31,7 +32,7 @@ function flipBoard() {
     });
     boardFlipped = true;
   }
-  console.log("flip me");
+  flipSound.play();
 }
 
 function newElement(tag, attrs) {
@@ -221,6 +222,7 @@ function dropIn(element) {
     dropZone.classList.remove("highlight-square");
     dropSound.play();
 
+    setTimeout(flipBoard, 2000);
   }
   dropZone = null;
 }
