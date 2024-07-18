@@ -6,7 +6,7 @@ let cursorY = 0;
 let dragOffsetX = 0;
 let dragOffsetY = 0;
 
-
+let dropElement = null;
 let dropZone = null;
 const board = document.getElementById("board");
 
@@ -106,71 +106,97 @@ setPieces();
 
 function setAsDropZone(element) {
 
-  element.addEventListener("mousemove", () => {
-    element.classList.add("highlight-square");
-    dropZone = element;
-  })
+  for (eventType of ["mousemove", "touchmove", "touchstart"]) {
+    element.addEventListener(eventType, () => {
+      element.classList.add("highlight-square");
+      dropZone = element;
+    })
+  }
 
-  element.addEventListener("mouseout", () => {
-    element.classList.remove("highlight-square");
-    dropZone = null;
-  })
+  for (eventType of ["mouseout", "touchend", "touchcancel"]) {
+    element.addEventListener(eventType, () => {
+      element.classList.remove("highlight-square");
+      dropZone = null;
+    })
+  }
 }
 
-function enableDrag(dragElement) {
+function enableDrag(element) {
 
-  dragElement.addEventListener("mousedown", (event) => {
-    event.preventDefault();
-
-    resetContext(dragElement);
-
-    drag(event);
-    document.onmousemove = drag;
-    document.onmouseup = releaseDrag;
-  });
-
-  function releaseDrag() {
-    dragElement.style.pointerEvents = "auto";
-    clearDocEvents();
-    dropIn(dragElement);
-    dragElement.classList.remove("dragged-piece");
+  for (let eventType of ["mousedown", "touchstart"]) {
+    element.addEventListener(eventType, (event) => {
+      dragElement = element;
+      startDrag(event);
+    });
   }
+}
 
-  function clearDocEvents() {
-    document.onmousemove = null;
-    document.onmouseup = null;
-  }
+function startDrag(event) {
+  event.preventDefault();
 
-  function drag(event) {
-    event.preventDefault();
-    updateCursorPos(event);
-    updateElementPos(dragElement);
-  }
+  resetContext();
 
-  function updateCursorPos(event) {
+  drag(event);
+  document.onmousemove = drag;
+  document.onmouseup = releaseDrag;
+
+  document.ontouchmove = drag;
+  document.ontouchend = releaseDrag;
+  document.ontouchcancel = releaseDrag;
+}
+
+function releaseDrag() {
+  dragElement.style.pointerEvents = "auto";
+  clearDocEvents();
+  dropIn(dragElement);
+  dragElement.classList.remove("dragged-piece");
+}
+
+function clearDocEvents() {
+  document.onmousemove = null;
+  document.onmouseup = null;
+
+  document.ontouchmove = null;
+  document.ontouchend = null;
+  document.ontouchcancel = null;
+}
+
+function drag(event) {
+  event.preventDefault();
+  updateCursorPos(event);
+  updateElementPos();
+}
+
+function updateCursorPos(event) {
+  console.log("event: ", event);
+  if (["touchstart", "touchmove"].includes(event.type)) {
+    cursorX = event.touches[0].clientX
+    cursorY = event.touches[0].clientY
+  } else {
     cursorX = event.clientX;
     cursorY = event.clientY;
-
-    const rect = dragElement.getBoundingClientRect();
-
-    // Subtracting half the width & height positions the center of the element under the cursor
-    dragOffsetX = cursorX - (rect.width / 2);
-    dragOffsetY = cursorY - (rect.height / 2);
   }
 
-  function updateElementPos(element) {
-    element.style.position = "absolute";
-    element.style.left = (dragOffsetX) + "px";
-    element.style.top = (dragOffsetY) + "px";
-  }
+  const rect = dragElement.getBoundingClientRect();
 
-  function resetContext(element) {
-    dragElement.classList.add("dragged-piece");
-    document.body.append(element);
-    element.style.position = "absolute";
-    element.style.pointerEvents = "none";
-  }
+  // Subtracting half the width & height positions the center of the element under the cursor
+  dragOffsetX = cursorX - (rect.width / 2);
+  dragOffsetY = cursorY - (rect.height / 2);
 }
+
+function updateElementPos() {
+  dragElement.style.position = "absolute";
+  dragElement.style.left = (dragOffsetX) + "px";
+  dragElement.style.top = (dragOffsetY) + "px";
+}
+
+function resetContext() {
+  dragElement.classList.add("dragged-piece");
+  document.body.append(dragElement);
+  dragElement.style.position = "absolute";
+  dragElement.style.pointerEvents = "none";
+}
+
 
 function dropIn(element) {
   if (dropZone) {
