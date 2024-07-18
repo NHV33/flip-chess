@@ -10,7 +10,9 @@ let cursorY = 0;
 let dragOffsetX = 0;
 let dragOffsetY = 0;
 
-let dropElement = null;
+let dragElement = null;
+let dragStartPos = null;
+
 let dropZone = null;
 const board = document.getElementById("board");
 
@@ -81,8 +83,11 @@ function placePiece(pos) {
   const newPiece = newElement("div", {class: "chess-piece"});
   pieceContainer.append(newPiece);
 
-  pieceColors = {l:"light-piece", d:"dark-piece"}
-  newPiece.classList.add(pieceColors[pos[2]]);
+  pieceColors = {l:"light", d:"dark"}
+  newPiece.classList.add(`${pieceColors[pos[2]]}-piece`);
+  newPiece.setAttribute("piece-color", pieceColors[pos[2]])
+  pieceContainer.setAttribute("piece-color", pieceColors[pos[2]])
+
   pieceTypes = {p:"o", n: "m", b:"v", r:"t", q:"w", k:"l"}
   newPiece.textContent = pieceTypes[pos[3]];
 
@@ -124,9 +129,14 @@ setPieces();
 // }
 
 function enableDrag(element) {
+  // TODO pieces sometimes jump to the initial pos after capture
+  const rect = element.getBoundingClientRect();
+  element.style.left = rect.x + "px";
+  element.style.top  = rect.y + "px";
 
   for (let eventType of ["mousedown", "touchstart"]) {
     element.addEventListener(eventType, (event) => {
+      dragStartPos = element.parentNode.id;
       dragElement = element;
       startDrag(event);
     });
@@ -134,9 +144,9 @@ function enableDrag(element) {
 }
 
 function startDrag(event) {
-  event.preventDefault();
+  // event.preventDefault();
 
-  resetContext();
+  resetContext(dragElement);
 
   drag(event);
   document.onmousemove = drag;
@@ -207,22 +217,45 @@ function updateElementPos() {
   dragElement.style.top = (dragOffsetY) + "px";
 }
 
-function resetContext() {
-  dragElement.classList.add("dragged-piece");
-  document.body.append(dragElement);
-  dragElement.style.position = "absolute";
-  dragElement.style.pointerEvents = "none";
+function resetContext(element) {
+  element.classList.add("dragged-piece");
+  document.body.append(element);
+  element.style.position = "absolute";
+  element.style.pointerEvents = "none";
 }
 
+function getSquareStatus(element) {
+  const existingPiece = dropZone.querySelector(".piece-container");
+  if (existingPiece && existingPiece.getAttribute("piece-color") === element.getAttribute("piece-color")) {
+    return "friend"
+  } else if (existingPiece) {
+    return "enemy"
+  }
+  return "empty"
+}
 
 function dropIn(element) {
   if (dropZone) {
+    const squareStatus = getSquareStatus(element);
+    if (squareStatus === "friend") {
+      dropZone = document.getElementById(dragStartPos);
+    } else if (squareStatus === "enemy") {
+      // TODO drop enemy pieces into some UI container on the sidelines
+      const enemyPiece = dropZone.querySelector(".piece-container");
+      resetContext(enemyPiece);
+      // dragElement = enemyPiece;
+      // startDrag();
+      enemyPiece.style.pointerEvents = "all";
+
+    }
+
     dropZone.append(element);
     element.style.position = "static";
     dropZone.classList.remove("highlight-square");
     dropSound.play();
 
-    setTimeout(flipBoard, 2000);
+    // automatically flip the board (disabled for now)
+    // setTimeout(flipBoard, 2000);
   }
   dropZone = null;
 }
