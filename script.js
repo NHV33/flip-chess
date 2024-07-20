@@ -242,11 +242,10 @@ function dropIn(element) {
     } else if (squareStatus === "enemy") {
       // TODO drop enemy pieces into some UI container on the sidelines
       const enemyPiece = dropZone.querySelector(".piece-container");
-      resetContext(enemyPiece);
-      // dragElement = enemyPiece;
-      // startDrag();
       enemyPiece.style.pointerEvents = "all";
-
+      const pieceColor = enemyPiece.getAttribute("piece-color");
+      const captureBox = document.getElementById(`captured-${pieceColor}`);
+      captureBox.append(enemyPiece);
     }
 
     dropZone.append(element);

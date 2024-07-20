@@ -8,6 +8,7 @@
 }
 
 :root {
+  user-select: none;
   --cell-size: 10vmin;
 }
 
@@ -75,6 +76,34 @@ body {
   display: flex;
   justify-content: center;
   width: 100%;
+}
+
+#panel-left { left: 0px }
+#panel-right { right: 0px }
+
+.side-panel {
+  /* z-index: -10; */
+  pointer-events: none;
+  position: fixed;
+  top: 0px;
+  width: var(--cell-size);
+  height: 100vh;
+  /* background-color: aqua; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.capture-box {
+  pointer-events: none;
+  /* background-color: blueviolet; */
+  width: calc(var(--cell-size) * 0.8);
+  min-height: calc(var(--cell-size) * 8);
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
 }
 
 #flip-button {
